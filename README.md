@@ -1,70 +1,45 @@
-# Setup
+# Docker Setup
 
-Use this guide if you do NOT want to use Docker in your project.
+Use this guide if you want to use Docker in your project.
+
+> Built with Docker v18.03.1-ce.
 
 ## Getting Started
 
-Create and activate a virtual environment, and then install the requirements.
-
-### Set Environment Variables
-
-Update *project/server/config.py*, and then run:
+Update the environment variables in *docker-compose.yml*, and then build the images and spin up the containers:
 
 ```sh
-$ export APP_NAME="Flask Skeleton"
-$ export APP_SETTINGS="project.server.config.DevelopmentConfig"
-$ export FLASK_DEBUG=1
+$ docker-compose up -d --build
 ```
 
-Using [Pipenv](https://docs.pipenv.org/) or [python-dotenv](https://github.com/theskumar/python-dotenv)? Use the *.env* file to set environment variables:
+Create the database:
 
 ```sh
-APP_NAME="Flask Skeleton"
-APP_SETTINGS="project.server.config.DevelopmentConfig"
-FLASK_DEBUG=1
+$ docker-compose run web python manage.py create_db
+$ docker-compose run web python manage.py db init
+$ docker-compose run web python manage.py db migrate
+$ docker-compose run web python manage.py create_admin
+$ docker-compose run web python manage.py create_data
 ```
 
-### Create DB
-
-```sh
-$ python manage.py create_db
-$ python manage.py db init
-$ python manage.py db migrate
-$ python manage.py create_admin
-$ python manage.py create_data
-```
-
-### Run the Application
-
-
-```sh
-$ python manage.py run
-```
-
-Access the application at the address [http://localhost:5000/](http://localhost:5000/)
+Access the application at the address [http://localhost:5002/](http://localhost:5002/)
 
 ### Testing
 
-Without coverage:
+Test without coverage:
 
 ```sh
-$ python manage.py test
+$ docker-compose run web python manage.py test
 ```
 
-With coverage:
+Test with coverage:
 
 ```sh
-$ python manage.py cov
+$ docker-compose run web python manage.py cov
 ```
 
-Run flake8 on the app:
+Lint:
 
 ```sh
-$ python manage.py flake
-```
-
-or
-
-```sh
-$ flake8 project
+$ docker-compose run web flake8 project
 ```
